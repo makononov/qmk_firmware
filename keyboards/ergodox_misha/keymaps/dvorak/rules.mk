@@ -6,6 +6,7 @@ RGB_LIGHT = no
 BACKLIGHT_ENABLE = no
 
 # Essential features
+EXTRAKEY_ENABLE = yes      # Extra key support
 CONSOLE_ENABLE = no        # Console for debug
 COMMAND_ENABLE = no        # Commands for debug and configuration
 AUDIO_ENABLE = no          # No audio support on Ergodox Misha
