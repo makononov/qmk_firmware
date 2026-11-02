@@ -102,18 +102,18 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
     ergodox_right_led_1_on();
     ergodox_right_led_2_on();
     ergodox_right_led_3_on();
-    ergodox_set_led_color(0, 10, 10);  // Default color
-    
+    ergodox_set_led_color(LED_COLOR_LAYER_0);  // Default color
+
     switch (layer) {
         case 1:
         case 8:
-            ergodox_set_led_color(0, 0, 128);  // Blue for layer 1/8
+            ergodox_set_led_color(LED_COLOR_LAYER_1);  // Violet for layer 1/8
             break;
         case 2:
-            ergodox_set_led_color(20, 15, 0);  // Amber for layer 2
+            ergodox_set_led_color(LED_COLOR_LAYER_2);  // Amber for layer 2
             break;
         case 3:
-            ergodox_set_led_color(0, 64, 0);   // Green for layer 3
+            ergodox_set_led_color(LED_COLOR_LAYER_3);  // Coral for layer 3
             break;
         default:
             // Default color already set

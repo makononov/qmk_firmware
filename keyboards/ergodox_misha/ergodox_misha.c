@@ -40,10 +40,33 @@ extern inline void ergodox_right_led_set(uint8_t led, uint8_t n);
 
 extern inline void ergodox_led_all_set(uint8_t n);
 
+extern inline void ergodox_set_led_color(uint8_t r, uint8_t g, uint8_t b);
+
 keyboard_config_t keyboard_config;
 
 bool         i2c_initialized = 0;
 i2c_status_t mcp23018_status = 0x20;
+
+static void startup_color_step(uint8_t r, uint8_t g, uint8_t b) {
+    ergodox_set_led_color(r, g, b);
+    _delay_ms(70);
+}
+
+// Hue sweep that lands on the Layer 0 color (8 steps * 70ms = 560ms)
+static void startup_color_cycle(void) {
+    ergodox_right_led_1_on();
+    ergodox_right_led_2_on();
+    ergodox_right_led_3_on();
+    startup_color_step(LED_COLOR_CYAN);
+    startup_color_step(LED_COLOR_BLUE);
+    startup_color_step(LED_COLOR_VIOLET);
+    startup_color_step(LED_COLOR_MAGENTA);
+    startup_color_step(LED_COLOR_CORAL);
+    startup_color_step(LED_COLOR_AMBER);
+    startup_color_step(LED_COLOR_YELLOW);
+    startup_color_step(LED_COLOR_LIME);
+    ergodox_set_led_color(LED_COLOR_LAYER_0);
+}
 
 void matrix_init_kb(void) {
     // keyboard LEDs (see "PWM on ports OC1(A|B|C)" in "teensy-2-0.md")
@@ -71,6 +94,7 @@ void matrix_init_kb(void) {
 #endif
 
     ergodox_blink_all_leds();
+    startup_color_cycle();
 
     matrix_init_user();
 }
