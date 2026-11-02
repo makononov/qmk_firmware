@@ -10,3 +10,6 @@
 
 // Default PWM values for the RGB LED
 #define PWM_DEFAULT_VALUE LED_BRIGHTNESS_DEFAULT
+
+// Unicode input through WinCompose on the Windows host
+#define UNICODE_SELECTED_MODES UNICODE_MODE_WINCOMPOSE

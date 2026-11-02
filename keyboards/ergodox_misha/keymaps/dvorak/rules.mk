@@ -9,6 +9,7 @@ BACKLIGHT_ENABLE = no
 EXTRAKEY_ENABLE = yes      # Extra key support
 CONSOLE_ENABLE = no        # Console for debug
 COMMAND_ENABLE = no        # Commands for debug and configuration
+UNICODEMAP_ENABLE = yes    # Unicode characters with Shift variants
 AUDIO_ENABLE = no          # No audio support on Ergodox Misha
 
 # Enable Caps Lock indicator via RGB LED

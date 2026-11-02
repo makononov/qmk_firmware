@@ -12,6 +12,28 @@ enum layers {
     NUM,
 };
 
+enum custom_keycodes {
+    ALT_TAB = SAFE_RANGE,
+};
+
+enum unicode_names {
+    LOWER_AE,
+    UPPER_AE,
+    LOWER_OE,
+    UPPER_OE,
+    LOWER_AA,
+    UPPER_AA,
+};
+
+const uint32_t PROGMEM unicode_map[] = {
+    [LOWER_AE] = 0x00E6, // æ
+    [UPPER_AE] = 0x00C6, // Æ
+    [LOWER_OE] = 0x00F8, // ø
+    [UPPER_OE] = 0x00D8, // Ø
+    [LOWER_AA] = 0x00E5, // å
+    [UPPER_AA] = 0x00C5, // Å
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [BASE] = LAYOUT_ergodox(
         // Left hand
@@ -37,8 +59,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [SYMB] = LAYOUT_ergodox(
         // Left hand
         QK_BOOT, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F11,
-        KC_NO, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F12,
-        LCTL(KC_C),  KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+        ALT_TAB, KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F12,
+        LCTL(KC_C),  KC_NO,   UP(LOWER_AE, UPPER_AE), UP(LOWER_OE, UPPER_OE), UP(LOWER_AA, UPPER_AA), KC_NO,
         LCTL(KC_V),   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
         LGUI(KC_L),   KC_NO,   KC_NO,   KC_NO,   KC_TRNS,
                                                       KC_NO,   KC_NO,
@@ -79,17 +101,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [NUM] = LAYOUT_ergodox(
         // Left hand
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+        KC_NO,   KC_TRNS, KC_TRNS, KC_TRNS, KC_NO,   KC_NO,   KC_NO,
         KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
-        KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
+        KC_NO,   KC_TRNS, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
         KC_NO,   KC_NO,   KC_NO,   KC_TRNS, KC_NO,
                                                       KC_NO,   KC_NO,
                                                                KC_NO,
                                             KC_TRNS, KC_TRNS,  KC_NO,
         // Right hand
-        KC_NO,   KC_NO,   KC_NO,   KC_PSLS, KC_PAST, KC_PMNS, KC_NO,
-        KC_NO,   KC_NO,   KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_NO,
-                 KC_NO,   KC_P4,   KC_P5,   KC_P6,   KC_PCMM, KC_NO,
+        KC_NO,   KC_NO,   KC_NO,   KC_PSLS, KC_PAST, KC_PMNS, KC_TRNS,
+        KC_NO,   KC_NO,   KC_P7,   KC_P8,   KC_P9,   KC_PPLS, KC_TRNS,
+                 KC_NO,   KC_P4,   KC_P5,   KC_P6,   KC_PCMM, KC_TRNS,
         KC_NO,   KC_NO,   KC_P1,   KC_P2,   KC_P3,   KC_PEQL, KC_NO,
                           KC_P0,   KC_NO,   KC_PDOT, KC_PENT, KC_NO,
         KC_NO,   KC_NO,
@@ -97,6 +119,44 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_NO,   KC_TRNS,   KC_TRNS
     )
 };
+
+#define ALT_TAB_TIMEOUT_MS 1000
+
+static bool     alt_tab_active = false;
+static uint16_t alt_tab_timer  = 0;
+
+static void alt_tab_release(void) {
+    if (alt_tab_active) {
+        unregister_code(KC_LALT);
+        alt_tab_active = false;
+    }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (keycode == ALT_TAB) {
+        if (record->event.pressed) {
+            if (!alt_tab_active) {
+                register_code(KC_LALT);
+                alt_tab_active = true;
+            }
+            tap_code(KC_TAB);
+            alt_tab_timer = timer_read();
+        }
+        return false;
+    }
+
+    // Any other key press ends the cycle before that key is handled
+    if (record->event.pressed) {
+        alt_tab_release();
+    }
+    return true;
+}
+
+void housekeeping_task_user(void) {
+    if (alt_tab_active && timer_elapsed(alt_tab_timer) >= ALT_TAB_TIMEOUT_MS) {
+        alt_tab_release();
+    }
+}
 
 
 #ifdef OTHER_KEYMAP_C
