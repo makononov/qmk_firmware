@@ -162,16 +162,16 @@ inline void ergodox_set_led_color(uint8_t r, uint8_t g, uint8_t b) {
     ergodox_right_led_3_set(255 - b);
 }
 
-// Shared colors for ergodox_set_led_color() (R, G, B)
-#define LED_COLOR_EMERALD 0, 200, 40    // field green
-#define LED_COLOR_VIOLET  140, 0, 255   // vivid purple
-#define LED_COLOR_AMBER   255, 140, 0   // warm gold
-#define LED_COLOR_CORAL   255, 40, 60   // coral red
-#define LED_COLOR_CYAN    0, 200, 200
-#define LED_COLOR_BLUE    0, 60, 255
-#define LED_COLOR_MAGENTA 255, 0, 160
-#define LED_COLOR_YELLOW  255, 220, 0
-#define LED_COLOR_LIME    120, 255, 0
+// Shared color palette, dimmed to 70% output for the single-point LED.
+#define LED_COLOR_EMERALD 0, 140, 28    // field green
+#define LED_COLOR_VIOLET  98, 0, 179    // vivid purple
+#define LED_COLOR_AMBER   179, 98, 0    // warm gold
+#define LED_COLOR_CORAL   179, 28, 42   // coral red
+#define LED_COLOR_CYAN    0, 140, 140
+#define LED_COLOR_BLUE    0, 42, 179
+#define LED_COLOR_MAGENTA 179, 0, 112
+#define LED_COLOR_YELLOW  179, 154, 0
+#define LED_COLOR_LIME    84, 179, 0
 
 #define LED_COLOR_LAYER_0 LED_COLOR_EMERALD
 #define LED_COLOR_LAYER_1 LED_COLOR_VIOLET
